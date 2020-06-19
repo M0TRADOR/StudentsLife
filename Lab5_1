@@ -1,0 +1,504 @@
+JavaJavaJavaJavaJavaJavaJavaJavaJavaJavaJavaJavaJavaJavaJavaJava
+
+import java.awt.EventQueue;
+import java.awt.Image;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JTextPane;
+import java.awt.Font;
+import java.awt.Color;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JFormattedTextField;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.ArrayList;
+
+class KidListElement {
+	KidListElement next; // указатель на следующий элемент
+	int data; // данные
+}
+
+class KidList {
+	private KidListElement tail; // указатель на последний элемент
+
+	void addFront(int data) { // добавить спереди
+
+		KidListElement kidN = new KidListElement(); // создаём новый элемент
+
+		if (tail == null) { // если список пуст
+
+			kidN.data = data;
+			tail = kidN;
+			tail.next = tail;
+		} else {
+			kidN.data = data;
+			kidN.next = tail.next;
+			tail.next = kidN;
+		}
+
+	}
+
+	void addBack(int data) { // добавление в конец списка
+		addFront(data);
+		tail = tail.next;
+	}
+
+	void kidBuild(int n) { // заполнение
+		for (int i = 1; i < n + 1; i++)
+			addBack(i);
+	}
+
+	void delEl(int data) // удаление элемента
+	{
+		if (tail.next == null)
+			return;
+
+		if (tail.next == tail) {
+			tail = null;
+			return;
+		}
+
+		if (tail.next.data == data) {
+			tail.next = tail.next.next;
+			return;
+		}
+
+		KidListElement t = tail.next;
+		if (t.next.data == data) {
+			if (tail == t.next)
+				tail = t;
+			t.next = t.next.next;
+			return;
+		}
+		t = t.next;
+		while (t.next != tail.next) {
+			if (t.next.data == data) {
+				if (tail == t.next)
+					tail = t;
+				t.next = t.next.next;
+				return;
+			}
+			t = t.next;
+		}
+	}
+
+	ArrayList<Integer> kidUnwind(int m, int n) { // Рассчёт задачи
+		ArrayList<Integer> sequence = new ArrayList<Integer>();
+		KidListElement kidN = tail;
+		int i = -1;
+		while (n > 0) {
+			i++;
+			if (i == m) {
+				sequence.add(kidN.data);
+				delEl(kidN.data);
+				i = 0;
+				n--;
+			}
+			kidN = kidN.next;
+
+		}
+
+		return sequence;
+
+	}
+}
+
+public class LoopUnwinder extends JFrame {
+	private JPanel contentPane;
+
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					LoopUnwinder frame = new LoopUnwinder();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	public LoopUnwinder() {
+		setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		setType(Type.UTILITY);
+		setResizable(false);
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				exitAllow exitDial = new exitAllow();
+				exitDial.setVisible(true);
+			}
+		});
+		setTitle("LoopUnwinderForm Puchko M. A. V10 951009");
+		setBackground(Color.LIGHT_GRAY);
+		setBounds(100, 100, 445, 281);
+		contentPane = new JPanel();
+		contentPane.setBackground(Color.WHITE);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+
+		JTextPane txtpnRadius = new JTextPane();
+		txtpnRadius.setEditable(false);
+		txtpnRadius.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+		txtpnRadius.setText("Amount of children");
+		txtpnRadius.setBounds(10, 31, 129, 23);
+		contentPane.add(txtpnRadius);
+
+		JTextPane txtpnSydeOfA = new JTextPane();
+		txtpnSydeOfA.setEditable(false);
+		txtpnSydeOfA.setText("Outgoing step");
+		txtpnSydeOfA.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+		txtpnSydeOfA.setBounds(10, 64, 113, 23);
+		contentPane.add(txtpnSydeOfA);
+
+		JTextPane txtPaneAnswer = new JTextPane();
+		txtPaneAnswer.setEditable(false);
+		txtPaneAnswer.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+		txtPaneAnswer.setBackground(Color.WHITE);
+		txtPaneAnswer.setBounds(10, 124, 293, 106);
+		contentPane.add(txtPaneAnswer);
+
+		JFormattedTextField txtFieldCyrcle = new JFormattedTextField();
+		txtFieldCyrcle.addKeyListener(new KeyAdapter() {
+			public void keyTyped(KeyEvent keyVenType) {
+				char symbl = keyVenType.getKeyChar();
+				if (!(Character.isDigit(symbl)) || (symbl == KeyEvent.VK_BACK_SPACE) || (symbl == KeyEvent.VK_DELETE))
+					keyVenType.consume();
+			}
+		});
+		txtFieldCyrcle.setBounds(149, 35, 96, 19);
+		contentPane.add(txtFieldCyrcle);
+
+		JFormattedTextField txtFieldSquare = new JFormattedTextField();
+		txtFieldSquare.addKeyListener(new KeyAdapter() {
+			public void keyTyped(KeyEvent keyVenType) {
+				char symbl = keyVenType.getKeyChar();
+				if (!(Character.isDigit(symbl)) || (symbl == KeyEvent.VK_BACK_SPACE) || (symbl == KeyEvent.VK_DELETE))
+					keyVenType.consume();
+			}
+		});
+		txtFieldSquare.setBounds(149, 64, 96, 19);
+		contentPane.add(txtFieldSquare);
+
+		JTextPane textLast = new JTextPane();
+		textLast.setEditable(false);
+		textLast.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+		textLast.setBackground(Color.WHITE);
+		textLast.setBounds(320, 124, 85, 106);
+		contentPane.add(textLast);
+
+		JButton btnCompareFigures = new JButton("find sequence");
+		btnCompareFigures.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (txtFieldCyrcle.getText().equals("") || txtFieldSquare.getText().equals(""))
+					txtPaneAnswer.setText("No data");
+				else {
+					int n = Integer.parseInt(txtFieldCyrcle.getText());
+					int m = Integer.parseInt(txtFieldSquare.getText());
+					if (n == 0 || m == 0)
+						txtPaneAnswer.setText("Not enough");
+					else {
+						KidList kl = new KidList();
+						kl.kidBuild(n);
+						ArrayList<Integer> arr = kl.kidUnwind(m, n);
+						txtPaneAnswer.setText("Sequence of outgoing kids - " + arr.toString());
+						textLast.setText("Last kid sitting - " + Integer.toString(arr.get(n - 1)));
+					}
+				}
+
+			}
+		});
+		btnCompareFigures.setBounds(10, 97, 129, 21);
+		contentPane.add(btnCompareFigures);
+
+		JButton btnInfoButton = new JButton("");
+		Image quaMark = new ImageIcon(this.getClass().getResource("/question_mark_img.png")).getImage();
+		btnInfoButton.setIcon(new ImageIcon(quaMark));
+		btnInfoButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				infoHelp helpForm = new infoHelp();
+				helpForm.setVisible(true);
+			}
+		});
+		btnInfoButton.setFont(new Font("Vineta BT", Font.PLAIN, 25));
+		btnInfoButton.setBounds(320, 31, 56, 67);
+		contentPane.add(btnInfoButton);
+
+	}
+}
+
+_______________________________________________________________________
+
+package zad5_1pack;
+
+import java.awt.BorderLayout;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class exitAllow extends JDialog {
+
+	private final JPanel contentPanel = new JPanel();
+
+	public static void main(String[] args) {
+		try {
+			exitAllow dialog = new exitAllow();
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public exitAllow() {
+		setModal(true);
+		setBounds(100, 100, 450, 300);
+		getContentPane().setLayout(new BorderLayout());
+		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		contentPanel.setLayout(null);{
+			JLabel label = new JLabel("No one leaves without");
+			label.setBounds(127, 50, 151, 35);
+			label.setFont(new Font("Chiller", Font.PLAIN, 22));
+			contentPanel.add(label);
+		}
+		{
+			JLabel label = new JLabel("permission");
+			label.setForeground(new Color(220, 20, 60));
+			label.setBounds(155, 75, 89, 35);
+			label.setFont(new Font("Chiller", Font.PLAIN, 30));
+			contentPanel.add(label);
+		}
+		{
+			JButton buttonAllow = new JButton("Allow");
+			buttonAllow.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					System.exit(0);
+					setVisible(false);
+					dispose();
+				}
+			});
+			buttonAllow.setBounds(63, 148, 85, 21);
+			buttonAllow.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+			contentPanel.add(buttonAllow);
+		}
+		{
+			JButton buttonStay = new JButton("Stay");
+			buttonStay.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					setVisible(false);
+					dispose();
+				}
+			});
+			buttonStay.setBounds(260, 148, 85, 21);
+			buttonStay.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+			contentPanel.add(buttonStay);
+		}
+		{
+			JPanel buttonPane = new JPanel();
+			getContentPane().add(buttonPane, BorderLayout.SOUTH);
+			buttonPane.setLayout(null);{
+				JButton okButton = new JButton("OK");
+				okButton.setBounds(316, 5, 47, 21);
+				okButton.setActionCommand("OK");
+				buttonPane.add(okButton);
+				getRootPane().setDefaultButton(okButton);
+			}
+			{
+				JButton cancelButton = new JButton("Cancel");
+				cancelButton.setBounds(368, 5, 63, 21);
+				cancelButton.setActionCommand("Cancel");
+				buttonPane.add(cancelButton);
+			}
+		}
+	}
+
+}
+
+_______________________________________________________________________
+
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import java.awt.Font;
+
+public class infoHelp extends JFrame {
+
+	private JPanel contentPane;
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					infoHelp frame = new infoHelp();
+					frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	public infoHelp() {
+		setType(Type.UTILITY);
+		setTitle("Help");
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setBounds(100, 100, 450, 180);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);
+		contentPane.setLayout(null);
+
+		JLabel lblEnterRadiusOf = new JLabel("Finding the sequense of the children");
+		lblEnterRadiusOf.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblEnterRadiusOf.setBounds(36, 20, 345, 32);
+		contentPane.add(lblEnterRadiusOf);
+
+		JLabel lblTheProgramWill = new JLabel("getting away from the cyrcle.");
+		lblTheProgramWill.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblTheProgramWill.setBounds(36, 62, 345, 27);
+		contentPane.add(lblTheProgramWill);
+
+		JLabel lblDoesTheCircle_1 = new JLabel("With variable step of outgoing numbers.");
+		lblDoesTheCircle_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblDoesTheCircle_1.setBounds(36, 99, 345, 32);
+		contentPane.add(lblDoesTheCircle_1);
+	}
+}
+
+C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++
+__________________________________________________________________________________________
+#include <vector>
+#include <iostream>
+#include <stdio.h>
+using namespace std;
+
+
+class KidList {
+	struct KidListElement {
+		int data;
+		KidListElement* next;
+	};
+	KidListElement* tail;
+
+public:
+	KidList() : tail(NULL) {};
+	void addFront(int data);
+	void addBack(int data);
+	void kidBuild(int n);
+	void delEl(int data);
+	vector<int> kidUnwind(int m, int n);
+};
+void KidList::addFront(int data)           //добавить спереди
+{
+	KidListElement* kidN = new KidListElement();  //создаём новый элемент
+
+	if (tail == NULL)            //если список пуст
+	{
+		kidN->data = data;
+		tail = kidN;
+		tail->next = tail;
+	}
+	else {
+		kidN->data = data;
+		kidN->next = tail->next;
+		tail->next = kidN;
+	}
+}
+
+void KidList::addBack(int data) {          //добавление в конец списка
+	addFront(data);
+	tail = tail->next;
+}
+
+void KidList::kidBuild(int n) {				//заполнение
+	for (int i = 1; i < n + 1; i++)
+		addBack(i);
+}
+
+void KidList::delEl(int data)          //удаление элемента
+{
+	cout << "kid" << data << endl;
+	if (tail->next == NULL) {
+		return; cout << "nothing" << endl;
+	}
+
+	if (tail->next == tail) {
+		tail->data = NULL;
+		cout << "one" << endl;
+		return;
+	}
+
+	if (tail->next->data == data) {
+		cout << "two" << endl;
+		tail->next = tail->next->next;
+		return;
+	}
+
+	KidListElement* t = tail;
+	if (t->next->data == data) {
+		cout << "1d " << t->data << " " << t->next->data << endl;
+		if (tail == t->next)
+		{
+			tail = t;
+		}
+		t->next = t->next->next;
+		return;
+	}
+	t = t->next;
+	while (t->next != tail->next) {
+		if (t->next->data == data) {
+			cout << "2d " << t->data << " " << t->next->data << endl;
+			if (tail == t->next)
+			{
+				tail = t;
+			}
+			t->next = t->next->next;
+			return;
+		}
+		t = t->next;
+	}
+}
+
+vector<int> KidList::kidUnwind(int m, int n) {
+	vector<int> sequence;
+	KidListElement kidN = *tail;
+	int i = -1;
+	while (0 < n) {
+		i++;
+		if (i == m) {
+			sequence.push_back(kidN.data);
+			delEl(kidN.data);
+			n--;
+			i = 0;
+		}
+		kidN = *kidN.next;
+
+	}
+	sequence.push_back(tail->data);
+
+	return sequence;
+
+}
