@@ -1,0 +1,462 @@
+JavaJavaJavaJavaJavaJavaJavaJavaJavaJavaJavaJavaJavaJavaJavaJava
+
+import java.awt.EventQueue;
+import java.awt.Image;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import javax.swing.JTextPane;
+import java.awt.Font;
+import java.awt.Color;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JFormattedTextField;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.JTree;
+import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.DefaultMutableTreeNode;
+
+public class TreeSighterWGraph extends JFrame {
+private JPanel contentPane;
+   private DefaultTreeModel oldModel;
+
+   public static void main(String[] args) {
+      EventQueue.invokeLater(new Runnable() {
+         public void run() {
+            try {
+               TreeSighterWGraph frame = new TreeSighterWGraph();
+               frame.setVisible(true);
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+         }
+      });
+   }
+
+   public TreeSighterWGraph() {
+      setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+      setType(Type.UTILITY);
+      setResizable(false);
+      addWindowListener(new WindowAdapter() {
+         public void windowClosing(WindowEvent e) {
+            exitAllow exitDial = new exitAllow();
+            exitDial.setVisible(true);
+         }
+      });
+      setTitle("TreeSighterForm Puchko M. A. V10 951009");
+      setBackground(Color.LIGHT_GRAY);
+      setBounds(100, 100, 445, 542);
+      contentPane = new JPanel();
+      contentPane.setBackground(Color.WHITE);
+      contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+      setContentPane(contentPane);
+      contentPane.setLayout(null);
+
+      JTextPane txtpnRadius = new JTextPane();
+      txtpnRadius.setEditable(false);
+      txtpnRadius.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+      txtpnRadius.setText("Enter binary code of the tree");
+      txtpnRadius.setBounds(10, 31, 129, 40);
+      contentPane.add(txtpnRadius);
+
+      JTextPane txtPaneAnswer = new JTextPane();
+      txtPaneAnswer.setEditable(false);
+      txtPaneAnswer.setFont(new Font("Times New Roman", Font.PLAIN, 14));
+      txtPaneAnswer.setBackground(Color.WHITE);
+      txtPaneAnswer.setBounds(140, 64, 212, 67);
+      contentPane.add(txtPaneAnswer);
+
+      JTree tree = new JTree();
+      tree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("1")));
+      tree.setBounds(27, 151, 391, 353);
+      oldModel = (DefaultTreeModel) tree.getModel();
+      contentPane.add(tree);
+
+      JFormattedTextField txtFieldCyrcle = new JFormattedTextField();
+      txtFieldCyrcle.addKeyListener(new KeyAdapter() {
+         public void keyTyped(KeyEvent keyVenType) {
+            char symbl = keyVenType.getKeyChar();
+            if (!((symbl == KeyEvent.VK_BACK_SPACE) || (symbl == KeyEvent.VK_DELETE) || (symbl == '1')
+                  || (symbl == '0')))
+               keyVenType.consume();
+
+         }
+      });
+      txtFieldCyrcle.setBounds(149, 35, 282, 19);
+      contentPane.add(txtFieldCyrcle);
+
+      JButton btnCompareFigures = new JButton("find max length");
+      btnCompareFigures.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            String code = txtFieldCyrcle.getText();
+            if (code.equals(""))
+               txtPaneAnswer.setText("No data");
+            else {
+               int brunchsLength = binaryCodeToTreeLength(code);
+               txtPaneAnswer.setText("Max length = " + Integer.toString(brunchsLength));
+               update(code);
+            }
+         }
+
+         private int binaryCodeToTreeLength(String code) {
+            int frstHalf = 0;
+            int scndHalf = 0;
+            int rootDistance = 0;
+            for (int i = 0; i < code.length(); i++) {
+               if (code.charAt(i) == '1') {
+                  rootDistance++;
+                  if (frstHalf < rootDistance)
+                     frstHalf = rootDistance;
+               } else {
+                  rootDistance--;
+               }
+               if (rootDistance == 0)
+                  if (frstHalf > scndHalf) {// 101101101000
+                     scndHalf = frstHalf; // 1101100011101000
+                     frstHalf = 0;
+                  }
+            }
+            System.out.println(frstHalf + " " + scndHalf);
+            return frstHalf + scndHalf;
+         }
+
+         private void update(String code) {
+            tree.setModel(new DefaultTreeModel(new DefaultMutableTreeNode("1") {
+               DefaultMutableTreeNode root = (DefaultMutableTreeNode) tree.getModel().getRoot();
+            }));
+            DefaultMutableTreeNode oldNode = (DefaultMutableTreeNode) tree.getModel().getRoot();
+            neuNode(code, oldNode, 2);
+            ((DefaultTreeModel) tree.getModel()).reload();
+         }
+
+         private void neuNode(String code, DefaultMutableTreeNode selectedNode, int n) {
+            if (code.length() > 1) {
+               char symb = code.charAt(0);
+               code = code.substring(1);
+               if (symb == '1') {
+                  DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(Integer.toString(n));
+                  selectedNode.add(newNode);
+                  selectedNode = newNode;
+                  n++;
+                  neuNode(code, selectedNode, n);
+               } else {
+                  selectedNode = selectedNode.getPreviousNode();
+                  neuNode(code, selectedNode, n);
+               }
+            }
+         }
+      });
+      btnCompareFigures.setBounds(1, 81, 129, 21);
+      contentPane.add(btnCompareFigures);
+
+      JButton btnInfoButton = new JButton("");
+      Image quaMark = new ImageIcon(this.getClass().getResource("/question_mark_img.png")).getImage();
+      btnInfoButton.setIcon(new ImageIcon(quaMark));
+      btnInfoButton.addActionListener(new ActionListener() {
+         public void actionPerformed(ActionEvent e) {
+            infoHelp helpForm = new infoHelp();
+            helpForm.setVisible(true);
+         }
+      });
+      btnInfoButton.setFont(new Font("Vineta BT", Font.PLAIN, 25));
+      btnInfoButton.setBounds(362, 64, 56, 67);
+      contentPane.add(btnInfoButton);
+   }
+}
+_______________________________________________________________________
+
+import java.awt.BorderLayout;
+
+import javax.swing.JButton;
+import javax.swing.JDialog;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import java.awt.Font;
+import java.awt.Color;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+
+public class exitAllow extends JDialog {
+
+   private final JPanel contentPanel = new JPanel();
+
+   public static void main(String[] args) {
+      try {
+         exitAllow dialog = new exitAllow();
+         dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+         dialog.setVisible(true);
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+
+   public exitAllow() {
+      setModal(true);
+      setBounds(100, 100, 450, 300);
+      getContentPane().setLayout(new BorderLayout());
+      contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+      getContentPane().add(contentPanel, BorderLayout.CENTER);
+      contentPanel.setLayout(null);
+      {
+         JLabel label = new JLabel("No one leaves without");
+         label.setBounds(127, 50, 151, 35);
+         label.setFont(new Font("Chiller", Font.PLAIN, 22));
+         contentPanel.add(label);
+      }
+      {
+         JLabel label = new JLabel("permission");
+         label.setForeground(new Color(220, 20, 60));
+         label.setBounds(155, 75, 89, 35);
+         label.setFont(new Font("Chiller", Font.PLAIN, 30));
+         contentPanel.add(label);
+      }
+      {
+         JButton buttonAllow = new JButton("Allow");
+         buttonAllow.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               System.exit(0);
+               setVisible(false);
+               dispose();
+            }
+         });
+         buttonAllow.setBounds(63, 148, 85, 21);
+         buttonAllow.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+         contentPanel.add(buttonAllow);
+      }
+      {
+         JButton buttonStay = new JButton("Stay");
+         buttonStay.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+               setVisible(false);
+               dispose();
+            }
+         });
+         buttonStay.setBounds(260, 148, 85, 21);
+         buttonStay.setFont(new Font("Times New Roman", Font.PLAIN, 15));
+         contentPanel.add(buttonStay);
+      }
+      {
+         JPanel buttonPane = new JPanel();
+         getContentPane().add(buttonPane, BorderLayout.SOUTH);
+         buttonPane.setLayout(null);
+         {
+            JButton okButton = new JButton("OK");
+            okButton.setBounds(316, 5, 47, 21);
+            okButton.setActionCommand("OK");
+            buttonPane.add(okButton);
+            getRootPane().setDefaultButton(okButton);
+         }
+         {
+            JButton cancelButton = new JButton("Cancel");
+            cancelButton.setBounds(368, 5, 63, 21);
+            cancelButton.setActionCommand("Cancel");
+            buttonPane.add(cancelButton);
+         }
+      }
+   }
+
+}
+____________________________________________________________________
+
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
+import java.awt.Font;
+
+public class infoHelp extends JFrame {
+
+   private JPanel contentPane;
+
+   /**
+    * Launch the application.
+    */
+   public static void main(String[] args) {
+      EventQueue.invokeLater(new Runnable() {
+         public void run() {
+            try {
+               infoHelp frame = new infoHelp();
+               frame.setVisible(true);
+            } catch (Exception e) {
+               e.printStackTrace();
+            }
+         }
+      });
+   }
+
+   public infoHelp() {
+      setType(Type.UTILITY);
+      setTitle("Help");
+      setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+      setBounds(100, 100, 450, 180);
+      contentPane = new JPanel();
+      contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+      setContentPane(contentPane);
+      contentPane.setLayout(null);
+      
+      JLabel lblEnterRadiusOf = new JLabel("Finding the max length");
+      lblEnterRadiusOf.setFont(new Font("Tahoma", Font.PLAIN, 16));
+      lblEnterRadiusOf.setBounds(36, 20, 345, 32);
+      contentPane.add(lblEnterRadiusOf);
+      
+      JLabel lblTheProgramWill = new JLabel("of a tree branches.");
+      lblTheProgramWill.setFont(new Font("Tahoma", Font.PLAIN, 16));
+      lblTheProgramWill.setBounds(36, 62, 345, 27);
+      contentPane.add(lblTheProgramWill);
+      
+      JLabel lblDoesTheCircle_1 = new JLabel("Input might be in binary.");
+      lblDoesTheCircle_1.setFont(new Font("Tahoma", Font.PLAIN, 16));
+      lblDoesTheCircle_1.setBounds(36, 99, 345, 32);
+      contentPane.add(lblDoesTheCircle_1);
+   }
+}
+
+
+C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++C++
+#include <iostream>
+#include <iostream>
+#include <stdio.h>
+#include <string>
+#include <vector>
+#include <sstream>
+using namespace std;
+
+vector<int> nodeBrunchesLength;
+string code;
+int maxLength = 0;
+
+bool BinarChecker(string line) {
+	bool result = true;
+	for (int i = 0; i < line.length(); i++) 
+		if (result)
+			result = ((line.at(i) == '1' || line.at(i) == '0'));
+	if (!result)
+		cout << "Only 1 and 0 allowed" << endl;
+	return result;
+}
+
+bool BalanceChecker(string line, char symbl1, char symbl2) {
+	int balancePoint = 0;
+	for (int i = 0; i < line.length(); i++)
+		if(line.at(i) == symbl1)
+			balancePoint++;
+		else
+			if (line.at(i) == symbl2)
+				balancePoint--;
+	if (balancePoint > 0)
+		cout << "To many " << symbl1 << " symbols. Delete them or add more" << symbl2 << " symbols" << endl;
+	else
+		if (balancePoint < 0)
+			cout << "To many " << symbl2 << " symbols. Delete them or add more" << symbl1 << " symbols" << endl;
+	return balancePoint == 0;
+}
+
+string BinarBalancedStrInput(string headLine) {
+	cout << headLine << endl;
+	string line;
+	bool Binar = false;
+	bool Balance = false;
+	while (!Balance) {
+		cin >> line;
+		Binar = BinarChecker(line);
+		if (Binar)
+			Balance = BalanceChecker(line, '1', '0');
+	}
+	return line;
+}
+
+void SimpleIntOut(string endLine, int length) {
+	stringstream ss;
+	ss << length;
+	cout << endLine << ss.str();
+}
+
+int nodeConclude() {
+	if (code.length() > 0)
+		code = code.substr(1);
+	int maxElemnt = 0;
+	int scndMax = 0;
+	for (int i = 0; i < nodeBrunchesLength.size(); i++) 
+		if (scndMax < nodeBrunchesLength[i]) {
+			scndMax = nodeBrunchesLength[i];
+			if (scndMax > maxElemnt) {
+				maxElemnt = scndMax;
+				scndMax = 0;
+			}
+		}
+	nodeBrunchesLength.clear();
+	if (maxLength < maxElemnt + scndMax)
+		maxLength = maxElemnt + scndMax;
+
+	scndMax = maxElemnt;
+	bool goingDown = true;
+	while (code.length() > 0 && goingDown)
+		if (code.at(0) == '0') {
+			maxElemnt++;
+			code = code.substr(1);
+		}
+		else
+			goingDown = false;
+	if (maxLength < maxElemnt)
+		maxLength = maxElemnt;
+	nodeBrunchesLength.push_back(maxElemnt);
+	return maxElemnt;
+}
+
+void FindNextFork(){   
+	int measurer = 0;
+	while (code.at(measurer) == '1') 
+		measurer++;
+	code = code.substr(measurer);
+	int border = measurer;
+	measurer = 0; 
+	bool exitLopp = false;
+	while (border > measurer && measurer < code.length() && !exitLopp) 
+		if (code.at(measurer) == '0') 
+			measurer++;
+		else
+			exitLopp = true;
+
+	code = code.substr(measurer);
+	nodeBrunchesLength.push_back(measurer);
+}
+
+void BinaryCodeToTreeLength() {
+	int currentMax = 0;
+	while(code.length() > 0) {
+		if(code.at(0) == '1')
+			FindNextFork();
+		if (code.length() > 0) {
+			if (code.at(0) == '0') {
+				int maxNode = nodeConclude();
+				if (maxNode > currentMax)
+					currentMax = maxNode;
+			}
+		}
+		else {
+			int maxNode = nodeConclude();
+			if (maxNode > currentMax)
+				currentMax = maxNode;
+		}
+	}
+
+}
+	
+
+int main(){
+	string headLine = "Enter binary code of the tree to find  max length of it's branches. \nMake sure that number of 1's of entered code equal to number of 0's.";
+	string endLine = "Max length = ";
+	code = BinarBalancedStrInput(headLine);
+	BinaryCodeToTreeLength();
+	SimpleIntOut(endLine, maxLength);
+}
