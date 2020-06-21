@@ -1,0 +1,355 @@
+5_1V2 5_1V2 5_1V2 5_1V2 5_1V2 5_1V2 5_1V2 5_1V2 5_1V2 5_1V2 5_1V2 5_1V2 5_1V2 5_1V2 5_1V2
+#include <cstddef>
+#include <vector>
+#ifndef __KIDCLASS_H__
+#define __KIDCLASS_H__
+class KidList {
+	struct KidListElement {
+		int data;
+		KidListElement* next;
+	};
+	KidListElement* tail;
+
+public:
+	KidList() : tail(NULL) {};
+	void addFront(int data);
+	void addBack(int data);
+	void kidBuild(int n);
+	void delEl(int data);
+	std::vector<int> kidUnwind(int m, int n);
+};
+#endif // __KIDCLASS_H__
+
+
+________________________________________________________________
+
+#include <vector>
+#include <iostream>
+#include <stdio.h>
+#include <string>
+#include <sstream>
+#include "KidClass.h"
+using namespace std;
+
+int main()
+{
+	vector<int> CoordListArr;
+	int n, m;
+	cout << "Enter the number of kids and value of outgoing step" << endl;
+	cin >> n >> m;
+	KidList kl;
+	kl.kidBuild(n);
+	CoordListArr = kl.kidUnwind(m, n);
+	stringstream strArr;
+	for (int i = 0; i < n; i++) {
+		strArr << CoordListArr[i] << " ";
+	}
+	cout << "Sequence of outgoing kids - " << strArr.str() << endl;
+	cout << "Last kid sitting - " << CoordListArr[n-1];
+	cin >> m;
+}
+
+
+________________________________________________________________________
+
+#include <iostream>
+#include <stdio.h>
+#include "KidClass.h"
+using namespace std;
+
+
+void KidList::addFront(int data)           //добавить спереди
+{
+	KidListElement* kidN = new KidListElement();  //создаём новый элемент
+
+	if (tail == NULL)            //если список пуст
+	{
+		kidN->data = data;
+		tail = kidN;
+		tail->next = tail;
+	}
+	else {
+		kidN->data = data;
+		kidN->next = tail->next;
+		tail->next = kidN;
+	}
+}
+
+void KidList::addBack(int data) {          //добавление в конец списка
+	addFront(data);
+	tail = tail->next;
+}
+
+void KidList::kidBuild(int n) {				//заполнение
+	for (int i = 1; i < n + 1; i++)
+		addBack(i);
+}
+
+void KidList::delEl(int data)          //удаление элемента
+{
+	if (tail->next == NULL) 
+		return;
+
+	if (tail->next == tail) {
+		tail->data = NULL;
+		return;
+	}
+
+	if (tail->next->data == data) {
+		tail->next = tail->next->next;
+		return;
+	}
+
+	KidListElement* t = tail;
+	if (t->next->data == data) {
+		if (tail == t->next)
+		{
+			tail = t;
+		}
+		t->next = t->next->next;
+		return;
+	}
+	t = t->next;
+	while (t->next != tail->next) {
+		if (t->next->data == data) {
+			if (tail == t->next)
+				tail = t;
+			t->next = t->next->next;
+			return;
+		}
+		t = t->next;
+	}
+}
+
+vector<int> KidList::kidUnwind(int m, int n) {
+	vector<int> sequence;
+	KidListElement kidN = *tail;
+	int i = -1;
+	while (0 < n) {
+		i++;
+		if (i == m) {
+			sequence.push_back(kidN.data);
+			delEl(kidN.data);
+			n--;
+			i = 0;
+		}
+		kidN = *kidN.next;
+
+	}
+	sequence.push_back(tail->data);
+
+	return sequence;
+
+} 
+ 
+5_2V2 5_2V2 5_2V2 5_2V2 5_2V2 5_2V2 5_2V2 5_2V2 5_2V2 5_2V2 5_2V2 5_2V2 5_2V2 5_2V2 5_2V2 5_2V2
+
+#pragma once
+
+#define WIN32_LEAN_AND_MEAN        
+#include <windows.h>
+
+
+____________________________________________________
+
+#ifndef PCH_H
+#define PCH_H
+
+#include "framework.h"
+
+#endif 
+
+
+_______________________________________________________
+
+#pragma once
+#include <string>
+
+#ifdef TREESIGHT_EXPORTS
+#define TREESIGHT_API __declspec(dllexport)
+#else
+#define TREESIGHT_API __declspec(dllimport)
+#endif
+
+extern "C++" TREESIGHT_API std::string BinarBalancedStrInput(std::string headLine);
+
+extern "C++" TREESIGHT_API void SimpleIntOut(std::string endLine, int length);
+
+extern "C++" TREESIGHT_API int BinaryCodeToTreeLength(std::string code);
+
+
+__________________________________________________________
+
+#include "pch.h"
+
+BOOL APIENTRY DllMain( HMODULE hModule,
+                       DWORD  ul_reason_for_call,
+                       LPVOID lpReserved
+                     )
+{
+    switch (ul_reason_for_call)
+    {
+    case DLL_PROCESS_ATTACH:
+    case DLL_THREAD_ATTACH:
+    case DLL_THREAD_DETACH:
+    case DLL_PROCESS_DETACH:
+        break;
+    }
+    return TRUE;
+}
+
+
+___________________________________________________
+
+#include "pch.h"
+
+
+____________________________________________________
+
+#include "pch.h"
+#include <iostream>
+#include <stdio.h>
+#include <string>
+#include <vector>
+#include <sstream>
+#include "TreeSightreLib.h"
+using namespace std;
+
+static vector<int> nodeBrunchesLength;
+static string code;
+static int maxLength = 0;
+
+bool BinarChecker(string line) {
+	bool result = true;
+	for (int i = 0; i < line.length(); i++)
+		if (result)
+			result = ((line.at(i) == '1' || line.at(i) == '0'));
+	if (!result)
+		cout << "Only 1 and 0 allowed" << endl;
+	return result;
+}
+
+bool BalanceChecker(string line, char symbl1, char symbl2) {
+	int balancePoint = 0;
+	for (int i = 0; i < line.length(); i++)
+		if (line.at(i) == symbl1)
+			balancePoint++;
+		else
+			if (line.at(i) == symbl2)
+				balancePoint--;
+	if (balancePoint > 0)
+		cout << "To many " << symbl1 << " symbols. Delete them or add more" << symbl2 << " symbols" << endl;
+	else
+		if (balancePoint < 0)
+			cout << "To many " << symbl2 << " symbols. Delete them or add more" << symbl1 << " symbols" << endl;
+	return balancePoint == 0;
+}
+
+string BinarBalancedStrInput(string headLine) {
+	cout << headLine << endl;
+	string line;
+	bool Binar = false;
+	bool Balance = false;
+	while (!Balance) {
+		cin >> line;
+		Binar = BinarChecker(line);
+		if (Binar)
+			Balance = BalanceChecker(line, '1', '0');
+	}
+	return line;
+}
+
+void SimpleIntOut(string endLine, int length) {
+	stringstream ss;
+	ss << length;
+	cout << endLine << ss.str();
+}
+
+int nodeConclude() {
+	if (code.length() > 0)
+		code = code.substr(1);
+	int maxElemnt = 0;
+	int scndMax = 0;
+	for (int i = 0; i < nodeBrunchesLength.size(); i++)
+		if (scndMax < nodeBrunchesLength[i]) {
+			scndMax = nodeBrunchesLength[i];
+			if (scndMax > maxElemnt) {
+				maxElemnt = scndMax;
+				scndMax = 0;
+			}
+		}
+	nodeBrunchesLength.clear();
+	if (maxLength < maxElemnt + scndMax)
+		maxLength = maxElemnt + scndMax;
+
+	scndMax = maxElemnt;
+	bool goingDown = true;
+	while (code.length() > 0 && goingDown)
+		if (code.at(0) == '0') {
+			maxElemnt++;
+			code = code.substr(1);
+		}
+		else
+			goingDown = false;
+	if (maxLength < maxElemnt)
+		maxLength = maxElemnt;
+	nodeBrunchesLength.push_back(maxElemnt);
+	return maxElemnt;
+}
+
+void FindNextFork() {
+	int measurer = 0;
+	while (code.at(measurer) == '1')
+		measurer++;
+	code = code.substr(measurer);
+	int border = measurer;
+	measurer = 0;
+	bool exitLopp = false;
+	while (border > measurer&& measurer < code.length() && !exitLopp)
+		if (code.at(measurer) == '0')
+			measurer++;
+		else
+			exitLopp = true;
+
+	code = code.substr(measurer);
+	nodeBrunchesLength.push_back(measurer);
+}
+
+int BinaryCodeToTreeLength(string line) {
+	code = line;
+	int currentMax = 0;
+	while (code.length() > 0) {
+		if (code.at(0) == '1')
+			FindNextFork();
+		if (code.length() > 0) {
+			if (code.at(0) == '0') {
+				int maxNode = nodeConclude();
+				if (maxNode > currentMax)
+					currentMax = maxNode;
+			}
+		}
+		else {
+			int maxNode = nodeConclude();
+			if (maxNode > currentMax)
+				currentMax = maxNode;
+		}
+	}
+	return maxLength;
+}
+
+
+\/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ \/ 
+
+#include <iostream>
+#include <string>
+#include "TreeSightreLib.h"
+using namespace std;
+
+int main() {
+	string headLine = "Enter binary code of the tree to find  max length of it's branches. \nMake sure that number of 1's of entered code equal to number of 0's.";
+	string endLine = "Max length = ";
+	string code = BinarBalancedStrInput(headLine);
+	int maxLength = BinaryCodeToTreeLength(code);
+	SimpleIntOut(endLine, maxLength);
+}
+
